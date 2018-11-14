@@ -4,7 +4,7 @@ import sys
 import telnetlib
 import datetime
 
-### account
+### 下記アカウントは機器設定のものに書き換える
 ### ToDo: Configファイルから読み込めるようにする
 user = 'dummy'
 password = 'dummy'
@@ -24,20 +24,20 @@ prompt = {
 nl = "\r\n" # new line character
 
 ### Telnet接続
-### IXの場合はTelnetオプション
+### IXの場合はTelnetオプション送信を無効化する
 tn = telnetlib.Telnet()
 # tn.set_debuglevel(3)
 tn.set_option_negotiation_callback(lambda x,y,z:None)
 tn.open(host, port, timeout)
 
 ### ログイン処理
-### IXの場合はTelnetオプション送信を無効化する
 tn.read_until(prompt['login'], timeout)
 tn.write(user + nl)
 tn.read_until(prompt['password'], timeout)
 tn.write(password + nl)
 
 ### 自動実行させたい内容
+### 保存したいコマンド実行結果をresultに代入する
 tn.read_until(prompt['general'], timeout)
 tn.write("enable" + nl)
 tn.read_until(prompt['enable'], timeout)
@@ -51,5 +51,5 @@ tn.close()
 ### ファイル書き出し
 filename = host + "_" + datetime.now().strftime("%Y%m%d-%H%M%S")
 fp=open(filename,"w")
-fp.write(output)
+fp.write(result)
 fp.close()
